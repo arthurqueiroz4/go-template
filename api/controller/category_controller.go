@@ -2,141 +2,104 @@ package controller
 
 import (
 	"crud-golang/api/dto"
-	"crud-golang/internal/infra/database"
-	"encoding/json"
-	"github.com/go-chi/chi/v5"
-	"net/http"
-	"strconv"
+	"crud-golang/domain"
+	"github.com/gofiber/fiber/v2"
 )
 
 type CategoryController struct {
-	cr database.CategoryRepo
+	cs domain.CategoryService
 }
 
-func NewCategoryController(categoryRepository database.CategoryRepo) *CategoryController {
+func NewCategoryController(cs domain.CategoryService) *CategoryController {
 	return &CategoryController{
-		cr: categoryRepository,
+		cs: cs,
 	}
 }
 
-func (c *CategoryController) CreateCategory(w http.ResponseWriter, r *http.Request) {
+func (cc *CategoryController) Create(c *fiber.Ctx) error {
 	var categoryDTO dto.CategoryDTO
 
-	if err := json.NewDecoder(r.Body).Decode(&categoryDTO); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+	if err := c.BodyParser(&categoryDTO); err != nil {
+		return err
 	}
+
 	category := categoryDTO.ParseToEntity()
 
-	category, err := c.cr.Save(category)
+	category, err := cc.cs.Create(category)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(dto.FromEntity(*category))
+	return c.JSON(dto.FromEntity(*category))
 }
 
-func (c *CategoryController) GetCategory(w http.ResponseWriter, r *http.Request) {
-	param := chi.URLParam(r, "id")
-	id, err := strconv.ParseUint(param, 10, 64)
+func (cc *CategoryController) GetCategory(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{"message": "id is required"})
 	}
-	category, err := c.cr.FindByID(uint(id))
+	category, err := cc.cs.GetById(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{"message": "category not found"})
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(dto.FromEntity(*category))
+	c.Status(fiber.StatusOK)
+	return c.JSON(dto.FromEntity(*category))
 }
 
-func (c *CategoryController) DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	param := chi.URLParam(r, "id")
-	id, err := strconv.ParseUint(param, 10, 64)
+func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{"message": "id is required"})
 	}
 
-	err = c.cr.Delete(uint(id))
+	err = cc.cs.Delete(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{"message": "category not found"})
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	c.Status(fiber.StatusNoContent)
+	return nil
 }
 
-func (c *CategoryController) UpdateCategory(w http.ResponseWriter, r *http.Request) {
-	param := chi.URLParam(r, "id")
-	id, err := strconv.ParseUint(param, 10, 64)
+func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{"message": "id is required"})
 	}
 
 	var categoryDTO dto.CategoryDTO
-	if err := json.NewDecoder(r.Body).Decode(&categoryDTO); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+	if err := c.BodyParser(&categoryDTO); err != nil {
+		return err
 	}
-	category := categoryDTO.ParseToEntity()
-	category.ID = uint(id)
-	_, err = c.cr.Update(category)
+	err = cc.cs.Update(id, categoryDTO.ParseToEntity())
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{"message": "category not found"})
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	c.Status(fiber.StatusNoContent)
+	return nil
 }
 
-func (c *CategoryController) GetAllCategory(w http.ResponseWriter, r *http.Request) {
-	var page int
-	var size = 10
-	var err error
-	if pageStr := r.URL.Query().Get("page"); pageStr != "" {
-		page, err = strconv.Atoi(pageStr)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(
-				map[string]string{"error": err.Error()},
-			)
-			return
-		}
-	}
-	if sizeStr := r.URL.Query().Get("size"); sizeStr != "" {
-		size, err = strconv.Atoi(sizeStr)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(
-				map[string]string{"error": err.Error()},
-			)
-			return
-		}
+func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
+	var page, size int
+	page = c.QueryInt("page")
+	if size = c.QueryInt("size"); size == 0 {
+		size = 10
 	}
 
-	categories, err := c.cr.FindAll(page, size)
+	all, err := cc.cs.GetAll(page, size)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+		c.Status(fiber.StatusInternalServerError)
+		return c.JSON(fiber.Map{"message": "internal server error"})
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(categories)
+	c.Status(fiber.StatusOK)
+	return c.JSON(all)
 }

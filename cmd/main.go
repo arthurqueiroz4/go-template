@@ -2,35 +2,25 @@ package main
 
 import (
 	"crud-golang/api/route"
-	"crud-golang/config"
-	"crud-golang/internal/entity"
-	"fmt"
-	"github.com/labstack/echo/v4"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"net/http"
+	"crud-golang/bootstrap"
+	"github.com/gofiber/fiber/v2"
+	"log"
 )
 
+//TODO criar teste de unidade e integracao
+//TODO melhorar erros e padronizar
+
 func main() {
-	cfg := config.LoadConfig()
+	app := bootstrap.App()
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo",
-		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort,
-	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	env := app.Env
 
-	err = db.AutoMigrate(&entity.Category{})
-	if err != nil {
-		return
-	}
+	db := app.Postgres
+	defer app.CloseDBConnection()
 
-	route.Setup(db, cfg)
-}
+	appFiber := fiber.New()
 
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	route.Setup(db, appFiber)
+
+	log.Fatal(appFiber.Listen(env.WebServerPort))
 }

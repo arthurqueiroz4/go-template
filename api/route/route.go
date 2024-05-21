@@ -1,34 +1,23 @@
 package route
 
 import (
-	"crud-golang/api/controller"
-	"crud-golang/config"
-	"crud-golang/internal/infra/database"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
-func Setup(DB *gorm.DB, cfg *config.Cfg) {
-	r := chi.NewRouter()
+func Setup(db gorm.DB, app *fiber.App) {
 
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	app.Use(recover.New())
+	app.Use(logger.New(logger.Config{
+		Format:     "${time} | ${status} | ${latency} | ${ip} | ${method} | ${path} | ${error}\n",
+		TimeFormat: "2006-01-02 15:04:05",
+		TimeZone:   "America/Sao_Paulo",
+	}))
 
-	cdb := database.NewCategoryDB(DB)
+	publicRouter := app.Group("")
+	//privateRouter := app.Group("")
 
-	cc := controller.NewCategoryController(cdb)
-
-	r.Route("/categories", func(r chi.Router) {
-		r.Post("/", cc.CreateCategory)
-		r.Get("/{id}", cc.GetCategory)
-		r.Delete("/{id}", cc.DeleteCategory)
-		r.Put("/{id}", cc.UpdateCategory)
-		r.Get("/", cc.GetAllCategory)
-	})
-
-	log.Println("Server running on port", cfg.WebServerPort)
-	log.Fatal(http.ListenAndServe(cfg.WebServerPort, r))
+	NewCategoryRouter(db, publicRouter)
 }

@@ -1,17 +1,19 @@
 package dto
 
-import "crud-golang/internal/entity"
+import (
+	"crud-golang/domain"
+)
 
 type CategoryDTO struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-func (d CategoryDTO) ParseToEntity() *entity.Category {
-	return entity.NewCategory(d.ID, d.Name)
+func (d CategoryDTO) ParseToEntity() *domain.Category {
+	return domain.NewCategory(d.ID, d.Name)
 }
 
-func FromEntity(category entity.Category) *CategoryDTO {
+func FromEntity(category domain.Category) *CategoryDTO {
 	return &CategoryDTO{
 		ID:   category.ID,
 		Name: category.Name,

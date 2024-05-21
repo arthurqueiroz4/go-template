@@ -15,7 +15,7 @@ DELETE localhost:8000/categories/1
 
 ###
 
-GET localhost:8000/categories
+GET localhost:8000/categories?size=10
 
 ###
 
