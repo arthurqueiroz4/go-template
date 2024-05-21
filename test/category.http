@@ -1,0 +1,27 @@
+POST http://localhost:8000/categories
+Content-Type: application/json
+
+{
+  "Name": "Category test"
+}
+
+###
+
+GET http://localhost:8000/categories/2
+
+###
+
+DELETE localhost:8000/categories/1
+
+###
+
+GET localhost:8000/categories
+
+###
+
+PUT localhost:8000/categories/1
+Content-Type: application/json
+
+{
+  "Name": "Category updated"
+}
