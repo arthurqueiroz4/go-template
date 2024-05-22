@@ -19,3 +19,14 @@ func FromEntity(category domain.Category) *CategoryDTO {
 		Name: category.Name,
 	}
 }
+
+func FromEntities(categories []domain.Category) []CategoryDTO {
+	categoriesDTO := make([]CategoryDTO, len(categories))
+	for i, category := range categories {
+		categoriesDTO[i] = CategoryDTO{
+			ID:   category.ID,
+			Name: category.Name,
+		}
+	}
+	return categoriesDTO
+}

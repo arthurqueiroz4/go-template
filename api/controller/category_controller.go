@@ -157,5 +157,5 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 	}
 
 	c.Status(fiber.StatusOK)
-	return c.JSON(all)
+	return c.JSON(dto.FromEntities(all))
 }
