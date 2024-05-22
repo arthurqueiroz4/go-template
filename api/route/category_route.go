@@ -9,7 +9,7 @@ import (
 )
 
 func NewCategoryRouter(db gorm.DB, r fiber.Router) {
-	cdb := repository.NewCategoryDB(&db)
+	cdb := repository.NewCategoryRepository(&db)
 	cs := service.NewCategoryService(cdb)
 	cc := controller.NewCategoryController(cs)
 

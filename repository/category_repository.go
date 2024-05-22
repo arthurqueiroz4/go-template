@@ -5,47 +5,26 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryRepositoryImpl struct {
-	db *gorm.DB
+type CategoryRepository struct {
+	BaseRepository[domain.Category]
 }
 
-func NewCategoryDB(db *gorm.DB) domain.CategoryRepository {
-	return &CategoryRepositoryImpl{db: db}
+func NewCategoryRepository(db *gorm.DB) *CategoryRepository {
+	return &CategoryRepository{NewBaseRepository[domain.Category](db)}
 }
 
-func (c *CategoryRepositoryImpl) Save(category *domain.Category) (*domain.Category, error) {
-	if err := c.db.Create(category).Error; err != nil {
-		return nil, err
-	}
-	return category, nil
-}
-
-func (c *CategoryRepositoryImpl) FindAll(page, limit int) ([]domain.Category, error) {
+func (c *CategoryRepository) FindAllSpec(page, size int, name string) ([]domain.Category, error) {
 	var categories []domain.Category
-	if err := c.db.Limit(limit).Offset(page * limit).Find(&categories).Error; err != nil {
+	query := c.DB
+	if name != "" {
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	query = query.Limit(size).Offset(page * size)
+
+	if err := query.Find(&categories).Error; err != nil {
 		return nil, err
 	}
+
 	return categories, nil
-}
-
-func (c *CategoryRepositoryImpl) FindByID(id int) (*domain.Category, error) {
-	var category domain.Category
-	if err := c.db.First(&category, id).Error; err != nil {
-		return nil, err
-	}
-	return &category, nil
-}
-
-func (c *CategoryRepositoryImpl) Update(category *domain.Category) (*domain.Category, error) {
-	if err := c.db.Save(category).Error; err != nil {
-		return nil, err
-	}
-	return category, nil
-}
-
-func (c *CategoryRepositoryImpl) Delete(id int) error {
-	if err := c.db.Delete(&domain.Category{}, id).Error; err != nil {
-		return err
-	}
-	return nil
 }

@@ -25,7 +25,7 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 
 	category := categoryDTO.ParseToEntity()
 
-	category, err := cc.cs.Create(category)
+	err := cc.cs.Create(category)
 	if err != nil {
 		return err
 	}
@@ -88,13 +88,11 @@ func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 }
 
 func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
-	var page, size int
-	page = c.QueryInt("page")
-	if size = c.QueryInt("size"); size == 0 {
-		size = 10
-	}
+	page := c.QueryInt("page", 0)
+	size := c.QueryInt("size", 10)
+	name := c.Query("name")
 
-	all, err := cc.cs.GetAll(page, size)
+	all, err := cc.cs.GetAll(page, size, name)
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{"message": "internal server error"})

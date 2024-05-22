@@ -7,8 +7,9 @@ import (
 	"log"
 )
 
-//TODO criar teste de unidade e integracao
-//TODO melhorar erros e padronizar
+// TODO criar teste de unidade e integracao
+// TODO melhorar erros e padronizar
+// TODO dinamic query
 
 func main() {
 	app := bootstrap.App()

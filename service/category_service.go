@@ -15,13 +15,13 @@ func NewCategoryService(categoryRepository domain.CategoryRepository) domain.Cat
 	}
 }
 
-func (cs *CategoryService) Create(category *domain.Category) (*domain.Category, error) {
-	categorySaved, err := cs.cr.Save(category)
+func (cs *CategoryService) Create(category *domain.Category) error {
+	err := cs.cr.Create(category)
 	if err != nil {
-		return nil, errors.New("category creation failed")
+		return errors.New("category creation failed")
 	}
 
-	return categorySaved, nil
+	return nil
 }
 
 func (cs *CategoryService) GetById(id int) (*domain.Category, error) {
@@ -33,8 +33,8 @@ func (cs *CategoryService) GetById(id int) (*domain.Category, error) {
 	return category, nil
 }
 
-func (cs *CategoryService) GetAll(page, size int) ([]domain.Category, error) {
-	all, err := cs.cr.FindAll(page, size)
+func (cs *CategoryService) GetAll(page, size int, name string) ([]domain.Category, error) {
+	all, err := cs.cr.FindAllSpec(page, size, name)
 	if err != nil {
 		return nil, errors.New("category list failed")
 	}
@@ -48,7 +48,7 @@ func (cs *CategoryService) Update(id int, categoryToUpdate *domain.Category) err
 	}
 
 	categoryToUpdate.ID = uint(id)
-	_, err := cs.cr.Update(categoryToUpdate)
+	err := cs.cr.Update(categoryToUpdate)
 	if err != nil {
 		return errors.New("category update failed")
 	}

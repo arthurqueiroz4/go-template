@@ -6,17 +6,14 @@ type Category struct {
 }
 
 type CategoryRepository interface {
-	Save(*Category) (*Category, error)
-	FindAll(int, int) ([]Category, error)
-	FindByID(int) (*Category, error)
-	Update(*Category) (*Category, error)
-	Delete(int) error
+	BaseRepository[Category]
+	FindAllSpec(int, int, string) ([]Category, error)
 }
 
 type CategoryService interface {
-	GetAll(int, int) ([]Category, error)
+	GetAll(int, int, string) ([]Category, error)
 	GetById(int) (*Category, error)
-	Create(*Category) (*Category, error)
+	Create(*Category) error
 	Update(int, *Category) error
 	Delete(int) error
 }

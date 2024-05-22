@@ -2,12 +2,12 @@ POST http://localhost:8000/categories
 Content-Type: application/json
 
 {
-  "Name": "Category test"
+  "Name": "abc"
 }
 
 ###
 
-GET http://localhost:8000/categories/2
+GET http://localhost:8000/categories/9
 
 ###
 
@@ -15,11 +15,11 @@ DELETE localhost:8000/categories/1
 
 ###
 
-GET localhost:8000/categories?size=10
+GET localhost:8000/categories?size=10&name=teste
 
 ###
 
-PUT localhost:8000/categories/1
+PUT localhost:8000/categories/9
 Content-Type: application/json
 
 {
