@@ -32,17 +32,20 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 	var categoryDTO dto.CategoryDTO
 
 	if err := c.BodyParser(&categoryDTO); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(map[string]interface{}{"message": "Invalid request body"})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "Invalid request body"})
 	}
 
 	category := categoryDTO.ParseToEntity()
 
 	err := cc.cs.Create(category)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(map[string]interface{}{"message": "Could not create category"})
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(map[string]any{"message": "Could not create category"})
 	}
 
-	return c.JSON(dto.FromEntity(*category))
+	return c.Status(fiber.StatusCreated).
+		JSON(dto.FromEntity(*category))
 }
 
 // GetCategory
@@ -59,17 +62,17 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 func (cc *CategoryController) GetCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		c.Status(fiber.StatusBadRequest)
-		return c.JSON(map[string]interface{}{"message": "ID is required"})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "ID is required"})
 	}
 	category, err := cc.cs.GetById(id)
 	if err != nil {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(map[string]interface{}{"message": "Category not found"})
+		return c.Status(fiber.StatusNotFound).
+			JSON(map[string]any{"message": "Category not found"})
 	}
 
-	c.Status(fiber.StatusOK)
-	return c.JSON(dto.FromEntity(*category))
+	return c.Status(fiber.StatusOK).
+		JSON(dto.FromEntity(*category))
 }
 
 // DeleteCategory
@@ -85,14 +88,14 @@ func (cc *CategoryController) GetCategory(c *fiber.Ctx) error {
 func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		c.Status(fiber.StatusBadRequest)
-		return c.JSON(map[string]interface{}{"message": "ID is required"})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "ID is required"})
 	}
 
 	err = cc.cs.Delete(id)
 	if err != nil {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(map[string]interface{}{"message": "Category not found"})
+		return c.Status(fiber.StatusNotFound).
+			JSON(map[string]any{"message": "Category not found"})
 	}
 
 	c.Status(fiber.StatusNoContent)
@@ -108,29 +111,32 @@ func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Category ID"
 // @Param category body dto.CategoryDTO true "Category DTO"
-// @Success 204 "No Content"
+// @Success 200 {object} dto.CategoryDTO
 // @Failure 400 {object} map[string]interface{}
 // @Failure 404 {object} map[string]interface{}
 // @Router /categories/{id} [put]
 func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		c.Status(fiber.StatusBadRequest)
-		return c.JSON(map[string]interface{}{"message": "ID is required"})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "ID is required"})
 	}
 
 	var categoryDTO dto.CategoryDTO
 	if err := c.BodyParser(&categoryDTO); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(map[string]interface{}{"message": "Invalid request body"})
-	}
-	err = cc.cs.Update(id, categoryDTO.ParseToEntity())
-	if err != nil {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(map[string]interface{}{"message": "Category not found"})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "Invalid request body"})
 	}
 
-	c.Status(fiber.StatusNoContent)
-	return nil
+	category := categoryDTO.ParseToEntity()
+	err = cc.cs.Update(id, category)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).
+			JSON(map[string]any{"message": "Category not found"})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(dto.FromEntity(*category))
 }
 
 // GetAllCategory
@@ -152,10 +158,10 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 
 	all, err := cc.cs.GetAll(page, size, name)
 	if err != nil {
-		c.Status(fiber.StatusInternalServerError)
-		return c.JSON(map[string]interface{}{"message": "Internal server error"})
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(map[string]any{"message": "Internal server error"})
 	}
 
-	c.Status(fiber.StatusOK)
-	return c.JSON(dto.FromEntities(all))
+	return c.Status(fiber.StatusOK).
+		JSON(dto.FromEntities(all))
 }

@@ -1,24 +1,8 @@
 {
-    "schemes": [
-        "http"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample CRUD.",
-        "title": "Category CRUD",
-        "contact": {
-            "name": "API Support",
-            "url": "http://suport.com",
-            "email": "support@dev.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8000",
-    "basePath": "/",
     "paths": {
         "/categories": {
             "get": {
@@ -191,8 +175,11 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CategoryDTO"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -250,6 +237,9 @@
     "definitions": {
         "dto.CategoryDTO": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"
