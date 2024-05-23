@@ -7,7 +7,6 @@ import (
 	"log"
 )
 
-//TODO use automapper https://stackoverflow.com/questions/65584357/mapping-one-type-to-another
 /*
 TODO write readme with explanation about:
 	"How gen mocks for tests? < mockgen -source=category.go -destination=./mock/mock_category.go >",

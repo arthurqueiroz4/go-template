@@ -3,6 +3,7 @@ package controller
 import (
 	"crud-golang/api/dto"
 	"crud-golang/domain"
+	"github.com/PeteProgrammer/go-automapper"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -36,16 +37,19 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 			JSON(map[string]any{"message": "Invalid request body"})
 	}
 
-	category := categoryDTO.ParseToEntity()
+	var category domain.Category
+	automapper.Map(categoryDTO, &category)
 
-	err := cc.cs.Create(category)
+	err := cc.cs.Create(&category)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(map[string]any{"message": "Could not create category"})
 	}
 
+	automapper.Map(category, &categoryDTO)
+
 	return c.Status(fiber.StatusCreated).
-		JSON(dto.FromEntity(*category))
+		JSON(categoryDTO)
 }
 
 // GetCategory
@@ -71,8 +75,10 @@ func (cc *CategoryController) GetCategory(c *fiber.Ctx) error {
 			JSON(map[string]any{"message": "Category not found"})
 	}
 
+	var categoryDTO dto.CategoryDTO
+	automapper.Map(category, &categoryDTO)
 	return c.Status(fiber.StatusOK).
-		JSON(dto.FromEntity(*category))
+		JSON(categoryDTO)
 }
 
 // DeleteCategory
@@ -128,15 +134,17 @@ func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 			JSON(map[string]any{"message": "Invalid request body"})
 	}
 
-	category := categoryDTO.ParseToEntity()
-	err = cc.cs.Update(id, category)
+	var category domain.Category
+	automapper.Map(categoryDTO, &category)
+	err = cc.cs.Update(id, &category)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).
 			JSON(map[string]any{"message": "Category not found"})
 	}
 
+	automapper.Map(category, &categoryDTO)
 	return c.Status(fiber.StatusOK).
-		JSON(dto.FromEntity(*category))
+		JSON(categoryDTO)
 }
 
 // GetAllCategory
@@ -162,8 +170,10 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 			JSON(map[string]any{"message": "Internal server error"})
 	}
 
+	var dtos []dto.CategoryDTO
+	automapper.Map(all, &dtos)
 	return c.Status(fiber.StatusOK).
-		JSON(dto.FromEntities(all))
+		JSON(dtos)
 }
 
 // GetAllActive
@@ -187,6 +197,8 @@ func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error {
 			JSON(map[string]any{"message": "Internal server error"})
 	}
 
+	var dtos []dto.CategoryDTO
+	automapper.Map(all, &dtos)
 	return c.Status(fiber.StatusOK).
-		JSON(dto.FromEntities(all))
+		JSON(dtos)
 }
