@@ -170,4 +170,35 @@ paths:
       summary: Update a category by ID
       tags:
       - Categories
+  /categories/active:
+    get:
+      description: Retrieve all categories, with pagination and filtering by active
+      parameters:
+      - default: 0
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.CategoryDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all categories with pagination and filtering by active
+      tags:
+      - Categories
 swagger: "2.0"

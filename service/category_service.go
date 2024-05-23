@@ -63,3 +63,14 @@ func (cs *CategoryService) Delete(id int) error {
 
 	return cs.cr.Delete(id)
 }
+
+func (cs *CategoryService) GetAllActive(page, size int) ([]domain.Category, error) {
+	queryForActive := "active = true"
+
+	all, err := cs.cr.FindAll(page, size, queryForActive)
+	if err != nil {
+		return nil, errors.New("category list failed")
+	}
+
+	return all, nil
+}

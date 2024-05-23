@@ -12,6 +12,7 @@ type CategoryRepository interface {
 }
 
 type CategoryService interface {
+	GetAllActive(int, int) ([]Category, error)
 	GetAll(int, int, string) ([]Category, error)
 	GetById(int) (*Category, error)
 	Create(*Category) error

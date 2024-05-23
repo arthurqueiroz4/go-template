@@ -165,3 +165,28 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(dto.FromEntities(all))
 }
+
+// GetAllActive
+//
+// @Summary Get all categories with pagination and filtering by active
+// @Description Retrieve all categories, with pagination and filtering by active
+// @Tags Categories
+// @Produce json
+// @Param page query int false "Page number" default(0)
+// @Param size query int false "Page size" default(10)
+// @Success 200 {array} dto.CategoryDTO
+// @Failure 500 {object} map[string]interface{}
+// @Router /categories/active [get]
+func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error {
+	page := c.QueryInt("page", 0)
+	size := c.QueryInt("size", 10)
+
+	all, err := cc.cs.GetAllActive(page, size)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(map[string]any{"message": "Internal server error"})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(dto.FromEntities(all))
+}

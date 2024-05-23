@@ -20,10 +20,15 @@ func (b *BaseRepository[T]) Create(category *T) error {
 	return nil
 }
 
-func (b *BaseRepository[T]) FindAll(page, limit int) ([]T, error) {
+func (b *BaseRepository[T]) FindAll(page, limit int, params ...string) ([]T, error) {
 	var entity []T
+	query := b.DB
 
-	if err := b.DB.Limit(limit).Offset(page * limit).Find(&entity).Error; err != nil {
+	for _, param := range params {
+		query = query.Where(param)
+	}
+
+	if err := query.Limit(limit).Offset(page * limit).Find(&entity).Error; err != nil {
 		return nil, err
 	}
 	return entity, nil

@@ -16,6 +16,7 @@ func NewCategoryRouter(db gorm.DB, r fiber.Router) {
 	cc := controller.NewCategoryController(cs)
 
 	r.Get("categories/", cc.GetAllCategory)
+	r.Get("categories/active", cc.GetAllActive)
 	r.Get("categories/:id", cc.GetCategory)
 	r.Post("categories/", middleware.ValidationBody[dto.CategoryDTO], cc.Create)
 	r.Delete("categories/:id", cc.DeleteCategory)

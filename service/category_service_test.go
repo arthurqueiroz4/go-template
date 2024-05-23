@@ -2,7 +2,7 @@ package service
 
 import (
 	"crud-golang/domain"
-	mockdomain "crud-golang/domain/mock"
+	mockdomain "crud-golang/mock"
 	"errors"
 	"go.uber.org/mock/gomock"
 
@@ -42,9 +42,9 @@ func TestShouldGetAllCategories(t *testing.T) {
 	mr := mockdomain.NewMockCategoryRepository(ctrl)
 
 	categories := []domain.Category{
-		*domain.NewCategory(uint(1), "test1"),
-		*domain.NewCategory(uint(2), "test2"),
-		*domain.NewCategory(uint(3), "test3"),
+		*domain.NewCategory(uint(1), "test1", false),
+		*domain.NewCategory(uint(2), "test2", false),
+		*domain.NewCategory(uint(3), "test3", false),
 	}
 
 	mr.
@@ -67,7 +67,7 @@ func TestShouldGetCategoryById(t *testing.T) {
 	defer ctrl.Finish()
 	mr := mockdomain.NewMockCategoryRepository(ctrl)
 
-	category := domain.NewCategory(uint(1), "test")
+	category := domain.NewCategory(uint(1), "test", false)
 
 	mr.
 		EXPECT().
@@ -88,8 +88,8 @@ func TestShouldUpdateCategory(t *testing.T) {
 	defer ctrl.Finish()
 	mr := mockdomain.NewMockCategoryRepository(ctrl)
 
-	category := domain.NewCategory(uint(1), "test")
-	updatedCategory := domain.NewCategory(uint(1), "updated test")
+	category := domain.NewCategory(uint(1), "test", false)
+	updatedCategory := domain.NewCategory(uint(1), "updated test", false)
 
 	mr.
 		EXPECT().
@@ -117,7 +117,7 @@ func TestShouldDeleteCategory(t *testing.T) {
 	defer ctrl.Finish()
 	mr := mockdomain.NewMockCategoryRepository(ctrl)
 
-	category := domain.NewCategory(uint(1), "test")
+	category := domain.NewCategory(uint(1), "test", false)
 
 	mr.
 		EXPECT().
@@ -162,4 +162,31 @@ func TestShouldReturnErrorWhenCategoryNotFound(t *testing.T) {
 	err = categoryService.Delete(1)
 	assert.NotNil(t, err)
 	assert.Equal(t, "category not found", err.Error())
+}
+
+func TestGetAllActiveCategories(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m := mockdomain.NewMockCategoryRepository(ctrl)
+
+	categories := []domain.Category{
+		*domain.NewCategory(uint(1), "test1", true),
+		*domain.NewCategory(uint(2), "test2", true),
+		*domain.NewCategory(uint(3), "test3", true),
+	}
+
+	m.EXPECT().
+		FindAll(gomock.Any(), gomock.Any(), gomock.Eq("active = true")).
+		Return(categories, nil).
+		Times(1)
+
+	categoryService :=
+		NewCategoryService(m)
+
+	result, err := categoryService.GetAllActive(0, 10)
+
+	assert.NoError(t, err)
+	assert.Len(t, result, 3)
+	assert.Equal(t, categories, result)
 }
