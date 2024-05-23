@@ -1,9 +1,12 @@
 definitions:
   dto.CategoryDTO:
     properties:
+      active:
+        type: boolean
       id:
         type: integer
       name:
+        maxLength: 50
         type: string
     required:
     - name

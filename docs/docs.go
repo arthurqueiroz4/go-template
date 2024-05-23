@@ -252,11 +252,15 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "active": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50
                 }
             }
         }

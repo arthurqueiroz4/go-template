@@ -1,8 +1,9 @@
 package domain
 
 type Category struct {
-	ID   uint `gorm:"primary_key;auto_increment"`
-	Name string
+	ID     uint `gorm:"primary_key;auto_increment"`
+	Name   string
+	Active bool
 }
 
 type CategoryRepository interface {
@@ -18,9 +19,10 @@ type CategoryService interface {
 	Delete(int) error
 }
 
-func NewCategory(id uint, name string) *Category {
+func NewCategory(id uint, name string, active bool) *Category {
 	return &Category{
-		Name: name,
-		ID:   id,
+		Name:   name,
+		ID:     id,
+		Active: active,
 	}
 }

@@ -20,7 +20,7 @@ func (c *CategoryRepository) FindAllSpec(page, size int, name string) ([]domain.
 		query = query.Where("name LIKE ?", "%"+name+"%")
 	}
 
-	query = query.Limit(size).Offset(page * size)
+	query = query.Limit(size).Offset(page * size).Order("name asc")
 
 	if err := query.Find(&categories).Error; err != nil {
 		return nil, err
