@@ -190,3 +190,34 @@ func TestGetAllActiveCategories(t *testing.T) {
 	assert.Len(t, result, 3)
 	assert.Equal(t, categories, result)
 }
+
+func TestCategoryServiceUpdateActive(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mr := mockdomain.NewMockCategoryRepository(ctrl)
+
+	category := domain.NewCategory(uint(1), "test", false)
+
+	mr.
+		EXPECT().
+		FindByID(gomock.Eq(1)).
+		Return(category, nil).
+		Times(1)
+
+	mr.
+		EXPECT().
+		Update(gomock.Any()).
+		DoAndReturn(func(updatedCategory *domain.Category) error {
+			assert.Equal(t, uint(1), updatedCategory.ID)
+			assert.True(t, updatedCategory.Active)
+			return nil
+		}).
+		Times(1)
+
+	categoryService := NewCategoryService(mr)
+
+	category, err := categoryService.UpdateActive(1, true)
+
+	assert.Nil(t, err)
+	assert.True(t, category.Active)
+}

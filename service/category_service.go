@@ -74,3 +74,19 @@ func (cs *CategoryService) GetAllActive(page, size int) ([]domain.Category, erro
 
 	return all, nil
 }
+
+func (cs *CategoryService) UpdateActive(id int, active bool) (*domain.Category, error) {
+	categoryToUpdate, err := cs.GetById(id)
+	if err != nil {
+		return nil, errors.New("category not found")
+	}
+
+	categoryToUpdate.ID = uint(id)
+	categoryToUpdate.Active = active
+	err = cs.cr.Update(categoryToUpdate)
+	if err != nil {
+		return nil, errors.New("category update active failed")
+	}
+
+	return categoryToUpdate, nil
+}

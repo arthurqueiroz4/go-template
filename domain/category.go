@@ -17,6 +17,7 @@ type CategoryService interface {
 	GetById(int) (*Category, error)
 	Create(*Category) error
 	Update(int, *Category) error
+	UpdateActive(int, bool) (*Category, error)
 	Delete(int) error
 }
 

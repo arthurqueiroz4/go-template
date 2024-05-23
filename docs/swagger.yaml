@@ -11,6 +11,11 @@ definitions:
     required:
     - name
     type: object
+  dto.CategoryDTOActive:
+    properties:
+      active:
+        type: boolean
+    type: object
 info:
   contact: {}
 paths:
@@ -199,6 +204,33 @@ paths:
             additionalProperties: true
             type: object
       summary: Get all categories with pagination and filtering by active
+      tags:
+      - Categories
+  /categories/active/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a category activation status
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category DTO Active
+        in: body
+        name: categoryActive
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CategoryDTOActive'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CategoryDTO'
+      summary: Update a category status by ID
       tags:
       - Categories
 swagger: "2.0"

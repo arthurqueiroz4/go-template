@@ -7,10 +7,11 @@ import (
 	"log"
 )
 
+//TODO Return Page in GETs
 /*
 TODO write readme with explanation about:
 	"How gen mocks for tests? < mockgen -source=category.go -destination=./mock/mock_category.go >",
-	"Its need that to generate swagger.json with SWAG CLI
+	"Its need to generate swagger.json with SWAG CLI
 	always when something changes for let swagger documentation updated."
 */
 

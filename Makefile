@@ -8,7 +8,7 @@ SWAGGER_OUTPUT=docs
 FILE ?= main.go
 OUT_FILE ?= ./mock/mock_base.go
 
-all: test coverage swagger
+all-test: test coverage open-coverage
 
 test:
 	$(TEST_CMD)

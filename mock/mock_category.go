@@ -240,3 +240,18 @@ func (mr *MockCategoryServiceMockRecorder) Update(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCategoryService)(nil).Update), arg0, arg1)
 }
+
+// UpdateActive mocks base method.
+func (m *MockCategoryService) UpdateActive(arg0 int, arg1 bool) (*domain.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateActive", arg0, arg1)
+	ret0, _ := ret[0].(*domain.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateActive indicates an expected call of UpdateActive.
+func (mr *MockCategoryServiceMockRecorder) UpdateActive(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateActive", reflect.TypeOf((*MockCategoryService)(nil).UpdateActive), arg0, arg1)
+}

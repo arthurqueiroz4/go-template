@@ -202,3 +202,39 @@ func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(dtos)
 }
+
+// UpdateActiveById
+//
+// @Summary Update a category status by ID
+// @Description Update a category activation status
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param id path int true "Category ID"
+// @Param categoryActive body dto.CategoryDTOActive true "Category DTO Active"
+// @Success 200 {object} dto.CategoryDTO
+// @Router /categories/active/{id} [patch]
+func (cc *CategoryController) UpdateActiveById(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "ID is required"})
+	}
+
+	var categoryDTOActive dto.CategoryDTOActive
+	if err := c.BodyParser(&categoryDTOActive); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(map[string]any{"message": "Invalid request body"})
+	}
+
+	category, err := cc.cs.UpdateActive(id, categoryDTOActive.Active)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).
+			JSON(map[string]any{"message": "Category not found"})
+	}
+
+	var categoryDTO dto.CategoryDTO
+	automapper.Map(category, &categoryDTO)
+	return c.Status(fiber.StatusOK).
+		JSON(categoryDTO)
+}

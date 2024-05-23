@@ -21,4 +21,5 @@ func NewCategoryRouter(db gorm.DB, r fiber.Router) {
 	r.Post("categories/", middleware.ValidationBody[dto.CategoryDTO], cc.Create)
 	r.Delete("categories/:id", cc.DeleteCategory)
 	r.Put("categories/:id", middleware.ValidationBody[dto.CategoryDTO], cc.UpdateCategory)
+	r.Patch("categories/active/:id", middleware.ValidationBody[dto.CategoryDTOActive], cc.UpdateActiveById)
 }
