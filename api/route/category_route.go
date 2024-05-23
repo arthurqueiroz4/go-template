@@ -2,6 +2,8 @@ package route
 
 import (
 	"crud-golang/api/controller"
+	"crud-golang/api/dto"
+	"crud-golang/api/middleware"
 	"crud-golang/repository"
 	"crud-golang/service"
 	"github.com/gofiber/fiber/v2"
@@ -15,7 +17,7 @@ func NewCategoryRouter(db gorm.DB, r fiber.Router) {
 
 	r.Get("categories/", cc.GetAllCategory)
 	r.Get("categories/:id", cc.GetCategory)
-	r.Post("categories/", cc.Create)
+	r.Post("categories/", middleware.ValidationBody[dto.CategoryDTO], cc.Create)
 	r.Delete("categories/:id", cc.DeleteCategory)
-	r.Put("categories/:id", cc.UpdateCategory)
+	r.Put("categories/:id", middleware.ValidationBody[dto.CategoryDTO], cc.UpdateCategory)
 }

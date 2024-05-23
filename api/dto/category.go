@@ -6,7 +6,7 @@ import (
 
 type CategoryDTO struct {
 	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required"`
 }
 
 func (d CategoryDTO) ParseToEntity() *domain.Category {
