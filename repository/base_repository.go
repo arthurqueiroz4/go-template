@@ -13,8 +13,8 @@ func NewBaseRepository[T any](db *gorm.DB) BaseRepository[T] {
 	return BaseRepository[T]{DB: db}
 }
 
-func (b *BaseRepository[T]) Create(category *T) error {
-	if err := b.DB.Create(category).Error; err != nil {
+func (b *BaseRepository[T]) Create(entity *T) error {
+	if err := b.DB.Create(entity).Error; err != nil {
 		return err
 	}
 	return nil
