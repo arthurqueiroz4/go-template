@@ -55,9 +55,9 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">crud-golang/api/controller/category_controller.go (0.0%)</option>
+				<option value="file0">crud-golang/api/controller/category_controller.go (80.0%)</option>
 				
-				<option value="file1">crud-golang/api/middleware/validation.go (0.0%)</option>
+				<option value="file1">crud-golang/api/middleware/validation.go (46.7%)</option>
 				
 				<option value="file2">crud-golang/api/route/category_route.go (0.0%)</option>
 				
@@ -77,7 +77,7 @@
 				
 				<option value="file10">crud-golang/domain/category.go (100.0%)</option>
 				
-				<option value="file11">crud-golang/mock/mock_category.go (48.5%)</option>
+				<option value="file11">crud-golang/mock/mock_category.go (100.0%)</option>
 				
 				<option value="file12">crud-golang/repository/base_repository.go (0.0%)</option>
 				
@@ -110,7 +110,7 @@ type CategoryController struct {
         cs domain.CategoryService
 }
 
-func NewCategoryController(cs domain.CategoryService) *CategoryController <span class="cov0" title="0">{
+func NewCategoryController(cs domain.CategoryService) *CategoryController <span class="cov8" title="1">{
         return &amp;CategoryController{
                 cs: cs,
         }
@@ -128,7 +128,7 @@ func NewCategoryController(cs domain.CategoryService) *CategoryController <span 
 // @Failure 400 {object} map[string]interface{}
 // @Failure 500 {object} map[string]interface{}
 // @Router /categories [post]
-func (cc *CategoryController) Create(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) Create(c *fiber.Ctx) error <span class="cov8" title="1">{
         var categoryDTO dto.CategoryDTO
 
         if err := c.BodyParser(&amp;categoryDTO); err != nil </span><span class="cov0" title="0">{
@@ -136,7 +136,7 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error <span class="cov0" titl
                         JSON(map[string]any{"message": "Invalid request body"})
         }</span>
 
-        <span class="cov0" title="0">var category domain.Category
+        <span class="cov8" title="1">var category domain.Category
         automapper.Map(categoryDTO, &amp;category)
 
         err := cc.cs.Create(&amp;category)
@@ -145,7 +145,7 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error <span class="cov0" titl
                         JSON(map[string]any{"message": "Could not create category"})
         }</span>
 
-        <span class="cov0" title="0">automapper.Map(category, &amp;categoryDTO)
+        <span class="cov8" title="1">automapper.Map(category, &amp;categoryDTO)
 
         return c.Status(fiber.StatusCreated).
                 JSON(categoryDTO)</span>
@@ -162,19 +162,19 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error <span class="cov0" titl
 // @Failure 400 {object} map[string]interface{}
 // @Failure 404 {object} map[string]interface{}
 // @Router /categories/{id} [get]
-func (cc *CategoryController) GetCategory(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) GetCategory(c *fiber.Ctx) error <span class="cov8" title="1">{
         id, err := c.ParamsInt("id")
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "ID is required"})
         }</span>
-        <span class="cov0" title="0">category, err := cc.cs.GetById(id)
+        <span class="cov8" title="1">category, err := cc.cs.GetById(id)
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusNotFound).
                         JSON(map[string]any{"message": "Category not found"})
         }</span>
 
-        <span class="cov0" title="0">var categoryDTO dto.CategoryDTO
+        <span class="cov8" title="1">var categoryDTO dto.CategoryDTO
         automapper.Map(category, &amp;categoryDTO)
         return c.Status(fiber.StatusOK).
                 JSON(categoryDTO)</span>
@@ -190,20 +190,20 @@ func (cc *CategoryController) GetCategory(c *fiber.Ctx) error <span class="cov0"
 // @Failure 400 {object} map[string]interface{}
 // @Failure 404 {object} map[string]interface{}
 // @Router /categories/{id} [delete]
-func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error <span class="cov8" title="1">{
         id, err := c.ParamsInt("id")
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "ID is required"})
         }</span>
 
-        <span class="cov0" title="0">err = cc.cs.Delete(id)
+        <span class="cov8" title="1">err = cc.cs.Delete(id)
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusNotFound).
                         JSON(map[string]any{"message": "Category not found"})
         }</span>
 
-        <span class="cov0" title="0">c.Status(fiber.StatusNoContent)
+        <span class="cov8" title="1">c.Status(fiber.StatusNoContent)
         return nil</span>
 }
 
@@ -220,20 +220,20 @@ func (cc *CategoryController) DeleteCategory(c *fiber.Ctx) error <span class="co
 // @Failure 400 {object} map[string]interface{}
 // @Failure 404 {object} map[string]interface{}
 // @Router /categories/{id} [put]
-func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error <span class="cov8" title="1">{
         id, err := c.ParamsInt("id")
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "ID is required"})
         }</span>
 
-        <span class="cov0" title="0">var categoryDTO dto.CategoryDTO
+        <span class="cov8" title="1">var categoryDTO dto.CategoryDTO
         if err := c.BodyParser(&amp;categoryDTO); err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "Invalid request body"})
         }</span>
 
-        <span class="cov0" title="0">var category domain.Category
+        <span class="cov8" title="1">var category domain.Category
         automapper.Map(categoryDTO, &amp;category)
         err = cc.cs.Update(id, &amp;category)
         if err != nil </span><span class="cov0" title="0">{
@@ -241,7 +241,7 @@ func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error <span class="co
                         JSON(map[string]any{"message": "Category not found"})
         }</span>
 
-        <span class="cov0" title="0">automapper.Map(category, &amp;categoryDTO)
+        <span class="cov8" title="1">automapper.Map(category, &amp;categoryDTO)
         return c.Status(fiber.StatusOK).
                 JSON(categoryDTO)</span>
 }
@@ -258,7 +258,7 @@ func (cc *CategoryController) UpdateCategory(c *fiber.Ctx) error <span class="co
 // @Success 200 {array} dto.CategoryDTO
 // @Failure 500 {object} map[string]interface{}
 // @Router /categories [get]
-func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error <span class="cov8" title="1">{
         page := c.QueryInt("page", 0)
         size := c.QueryInt("size", 10)
         name := c.Query("name")
@@ -269,7 +269,7 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error <span class="co
                         JSON(map[string]any{"message": "Internal server error"})
         }</span>
 
-        <span class="cov0" title="0">var dtos []dto.CategoryDTO
+        <span class="cov8" title="1">var dtos []dto.CategoryDTO
         automapper.Map(all, &amp;dtos)
         return c.Status(fiber.StatusOK).
                 JSON(dtos)</span>
@@ -286,7 +286,7 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error <span class="co
 // @Success 200 {array} dto.CategoryDTO
 // @Failure 500 {object} map[string]interface{}
 // @Router /categories/active [get]
-func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error <span class="cov8" title="1">{
         page := c.QueryInt("page", 0)
         size := c.QueryInt("size", 10)
 
@@ -296,7 +296,7 @@ func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error <span class="cov0
                         JSON(map[string]any{"message": "Internal server error"})
         }</span>
 
-        <span class="cov0" title="0">var dtos []dto.CategoryDTO
+        <span class="cov8" title="1">var dtos []dto.CategoryDTO
         automapper.Map(all, &amp;dtos)
         return c.Status(fiber.StatusOK).
                 JSON(dtos)</span>
@@ -313,26 +313,26 @@ func (cc *CategoryController) GetAllActive(c *fiber.Ctx) error <span class="cov0
 // @Param categoryActive body dto.CategoryDTOActive true "Category DTO Active"
 // @Success 200 {object} dto.CategoryDTO
 // @Router /categories/active/{id} [patch]
-func (cc *CategoryController) UpdateActiveById(c *fiber.Ctx) error <span class="cov0" title="0">{
+func (cc *CategoryController) UpdateActiveById(c *fiber.Ctx) error <span class="cov8" title="1">{
         id, err := c.ParamsInt("id")
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "ID is required"})
         }</span>
 
-        <span class="cov0" title="0">var categoryDTOActive dto.CategoryDTOActive
+        <span class="cov8" title="1">var categoryDTOActive dto.CategoryDTOActive
         if err := c.BodyParser(&amp;categoryDTOActive); err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).
                         JSON(map[string]any{"message": "Invalid request body"})
         }</span>
 
-        <span class="cov0" title="0">category, err := cc.cs.UpdateActive(id, categoryDTOActive.Active)
+        <span class="cov8" title="1">category, err := cc.cs.UpdateActive(id, categoryDTOActive.Active)
         if err != nil </span><span class="cov0" title="0">{
                 return c.Status(fiber.StatusNotFound).
                         JSON(map[string]any{"message": "Category not found"})
         }</span>
 
-        <span class="cov0" title="0">var categoryDTO dto.CategoryDTO
+        <span class="cov8" title="1">var categoryDTO dto.CategoryDTO
         automapper.Map(category, &amp;categoryDTO)
         return c.Status(fiber.StatusOK).
                 JSON(categoryDTO)</span>
@@ -354,7 +354,7 @@ type ErrorMessage struct {
 
 var Validator = validator.New()
 
-func ValidationBody[T any](c *fiber.Ctx) error <span class="cov0" title="0">{
+func ValidationBody[T any](c *fiber.Ctx) error <span class="cov8" title="1">{
         var errors []*ErrorMessage
         body := new(T)
         err := c.BodyParser(body)
@@ -362,7 +362,7 @@ func ValidationBody[T any](c *fiber.Ctx) error <span class="cov0" title="0">{
                 return c.Status(fiber.StatusBadRequest).JSON(ErrorMessage{Error: err.Error()})
         }</span>
 
-        <span class="cov0" title="0">err = Validator.Struct(body)
+        <span class="cov8" title="1">err = Validator.Struct(body)
         if err != nil </span><span class="cov0" title="0">{
                 for _, err := range err.(validator.ValidationErrors) </span><span class="cov0" title="0">{
                         var el ErrorMessage
@@ -373,7 +373,7 @@ func ValidationBody[T any](c *fiber.Ctx) error <span class="cov0" title="0">{
                 }</span>
                 <span class="cov0" title="0">return c.Status(fiber.StatusBadRequest).JSON(errors)</span>
         }
-        <span class="cov0" title="0">return c.Next()</span>
+        <span class="cov8" title="1">return c.Next()</span>
 }
 </pre>
 		
@@ -1196,19 +1196,19 @@ type MockCategoryServiceMockRecorder struct {
 }
 
 // NewMockCategoryService creates a new mock instance.
-func NewMockCategoryService(ctrl *gomock.Controller) *MockCategoryService <span class="cov0" title="0">{
+func NewMockCategoryService(ctrl *gomock.Controller) *MockCategoryService <span class="cov8" title="1">{
         mock := &amp;MockCategoryService{ctrl: ctrl}
         mock.recorder = &amp;MockCategoryServiceMockRecorder{mock}
         return mock
 }</span>
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCategoryService) EXPECT() *MockCategoryServiceMockRecorder <span class="cov0" title="0">{
+func (m *MockCategoryService) EXPECT() *MockCategoryServiceMockRecorder <span class="cov8" title="1">{
         return m.recorder
 }</span>
 
 // Create mocks base method.
-func (m *MockCategoryService) Create(arg0 *domain.Category) error <span class="cov0" title="0">{
+func (m *MockCategoryService) Create(arg0 *domain.Category) error <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Create", arg0)
         ret0, _ := ret[0].(error)
@@ -1216,13 +1216,13 @@ func (m *MockCategoryService) Create(arg0 *domain.Category) error <span class="c
 }</span>
 
 // Create indicates an expected call of Create.
-func (mr *MockCategoryServiceMockRecorder) Create(arg0 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) Create(arg0 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCategoryService)(nil).Create), arg0)
 }</span>
 
 // Delete mocks base method.
-func (m *MockCategoryService) Delete(arg0 int) error <span class="cov0" title="0">{
+func (m *MockCategoryService) Delete(arg0 int) error <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Delete", arg0)
         ret0, _ := ret[0].(error)
@@ -1230,13 +1230,13 @@ func (m *MockCategoryService) Delete(arg0 int) error <span class="cov0" title="0
 }</span>
 
 // Delete indicates an expected call of Delete.
-func (mr *MockCategoryServiceMockRecorder) Delete(arg0 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) Delete(arg0 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCategoryService)(nil).Delete), arg0)
 }</span>
 
 // GetAll mocks base method.
-func (m *MockCategoryService) GetAll(arg0, arg1 int, arg2 string) ([]domain.Category, error) <span class="cov0" title="0">{
+func (m *MockCategoryService) GetAll(arg0, arg1 int, arg2 string) ([]domain.Category, error) <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "GetAll", arg0, arg1, arg2)
         ret0, _ := ret[0].([]domain.Category)
@@ -1245,13 +1245,13 @@ func (m *MockCategoryService) GetAll(arg0, arg1 int, arg2 string) ([]domain.Cate
 }</span>
 
 // GetAll indicates an expected call of GetAll.
-func (mr *MockCategoryServiceMockRecorder) GetAll(arg0, arg1, arg2 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) GetAll(arg0, arg1, arg2 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockCategoryService)(nil).GetAll), arg0, arg1, arg2)
 }</span>
 
 // GetAllActive mocks base method.
-func (m *MockCategoryService) GetAllActive(arg0, arg1 int) ([]domain.Category, error) <span class="cov0" title="0">{
+func (m *MockCategoryService) GetAllActive(arg0, arg1 int) ([]domain.Category, error) <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "GetAllActive", arg0, arg1)
         ret0, _ := ret[0].([]domain.Category)
@@ -1260,13 +1260,13 @@ func (m *MockCategoryService) GetAllActive(arg0, arg1 int) ([]domain.Category, e
 }</span>
 
 // GetAllActive indicates an expected call of GetAllActive.
-func (mr *MockCategoryServiceMockRecorder) GetAllActive(arg0, arg1 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) GetAllActive(arg0, arg1 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllActive", reflect.TypeOf((*MockCategoryService)(nil).GetAllActive), arg0, arg1)
 }</span>
 
 // GetById mocks base method.
-func (m *MockCategoryService) GetById(arg0 int) (*domain.Category, error) <span class="cov0" title="0">{
+func (m *MockCategoryService) GetById(arg0 int) (*domain.Category, error) <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "GetById", arg0)
         ret0, _ := ret[0].(*domain.Category)
@@ -1275,13 +1275,13 @@ func (m *MockCategoryService) GetById(arg0 int) (*domain.Category, error) <span 
 }</span>
 
 // GetById indicates an expected call of GetById.
-func (mr *MockCategoryServiceMockRecorder) GetById(arg0 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) GetById(arg0 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockCategoryService)(nil).GetById), arg0)
 }</span>
 
 // Update mocks base method.
-func (m *MockCategoryService) Update(arg0 int, arg1 *domain.Category) error <span class="cov0" title="0">{
+func (m *MockCategoryService) Update(arg0 int, arg1 *domain.Category) error <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Update", arg0, arg1)
         ret0, _ := ret[0].(error)
@@ -1289,13 +1289,13 @@ func (m *MockCategoryService) Update(arg0 int, arg1 *domain.Category) error <spa
 }</span>
 
 // Update indicates an expected call of Update.
-func (mr *MockCategoryServiceMockRecorder) Update(arg0, arg1 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) Update(arg0, arg1 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCategoryService)(nil).Update), arg0, arg1)
 }</span>
 
 // UpdateActive mocks base method.
-func (m *MockCategoryService) UpdateActive(arg0 int, arg1 bool) (*domain.Category, error) <span class="cov0" title="0">{
+func (m *MockCategoryService) UpdateActive(arg0 int, arg1 bool) (*domain.Category, error) <span class="cov8" title="1">{
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "UpdateActive", arg0, arg1)
         ret0, _ := ret[0].(*domain.Category)
@@ -1304,7 +1304,7 @@ func (m *MockCategoryService) UpdateActive(arg0 int, arg1 bool) (*domain.Categor
 }</span>
 
 // UpdateActive indicates an expected call of UpdateActive.
-func (mr *MockCategoryServiceMockRecorder) UpdateActive(arg0, arg1 any) *gomock.Call <span class="cov0" title="0">{
+func (mr *MockCategoryServiceMockRecorder) UpdateActive(arg0, arg1 any) *gomock.Call <span class="cov8" title="1">{
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateActive", reflect.TypeOf((*MockCategoryService)(nil).UpdateActive), arg0, arg1)
 }</span>

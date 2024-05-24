@@ -18,7 +18,13 @@ func ValidationBody[T any](c *fiber.Ctx) error {
 	body := new(T)
 	err := c.BodyParser(body)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorMessage{Error: err.Error()})
+		message := ErrorMessage{
+			Field: "body",
+			Tag:   "parse",
+			Error: "body parse error",
+		}
+		return c.Status(fiber.StatusBadRequest).
+			JSON(message)
 	}
 
 	err = Validator.Struct(body)
@@ -30,7 +36,8 @@ func ValidationBody[T any](c *fiber.Ctx) error {
 			el.Error = err.Error()
 			errors = append(errors, &el)
 		}
-		return c.Status(fiber.StatusBadRequest).JSON(errors)
+		return c.Status(fiber.StatusBadRequest).
+			JSON(errors)
 	}
 	return c.Next()
 }
