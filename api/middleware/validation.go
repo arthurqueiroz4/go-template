@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"log"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,6 +20,7 @@ func ValidationBody[T any](c *fiber.Ctx) error {
 	body := new(T)
 	err := c.BodyParser(body)
 	if err != nil {
+		log.Println(err)
 		message := ErrorMessage{
 			Field: "body",
 			Tag:   "parse",

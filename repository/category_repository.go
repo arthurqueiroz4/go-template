@@ -2,6 +2,7 @@ package repository
 
 import (
 	"crud-golang/domain"
+
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,7 @@ func NewCategoryRepository(db *gorm.DB) *CategoryRepository {
 func (c *CategoryRepository) FindAllSpec(page, size int, name string) ([]domain.Category, error) {
 	var categories []domain.Category
 	query := c.DB
+	query.Preload("Products")
 	if name != "" {
 		query = query.Where("name LIKE ?", "%"+name+"%")
 	}

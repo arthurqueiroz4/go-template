@@ -1,9 +1,10 @@
 package dto
 
 type CategoryDTO struct {
-	ID     uint   `json:"id"`
-	Name   string `json:"name" validate:"required,max=50"`
-	Active bool   `json:"active" validate:"boolean"`
+	Name     string       `json:"name" validate:"required,max=50"`
+	Products []ProductDTO `json:"products"`
+	ID       uint         `json:"id"`
+	Active   bool         `json:"active" validate:"boolean"`
 }
 
 type CategoryDTOActive struct {
