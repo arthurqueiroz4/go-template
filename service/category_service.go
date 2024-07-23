@@ -34,7 +34,7 @@ func (cs *CategoryService) GetById(id int) (*domain.Category, error) {
 }
 
 func (cs *CategoryService) GetAll(page, size int, name string) ([]domain.Category, error) {
-	all, err := cs.cr.FindAllSpec(page, size, name)
+	all, err := cs.cr.FindAll(page, size, name)
 	if err != nil {
 		return nil, errors.New("category list failed")
 	}

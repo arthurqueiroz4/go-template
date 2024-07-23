@@ -1,14 +1,14 @@
 package domain
 
 type Category struct {
-	ID     uint `gorm:"primary_key;auto_increment"`
-	Name   string
-	Active bool
+	Name     string
+	Products []*Product `gorm:"many2many:category_product"`
+	ID       uint       `gorm:"primary_key;auto_increment"`
+	Active   bool
 }
 
 type CategoryRepository interface {
 	BaseRepository[Category]
-	FindAllSpec(int, int, string) ([]Category, error)
 }
 
 type CategoryService interface {

@@ -2,6 +2,7 @@ package route
 
 import (
 	_ "crud-golang/docs"
+
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -21,7 +22,6 @@ import (
 // @BasePath /
 // @schemes http
 func Setup(db gorm.DB, app *fiber.App) {
-
 	app.Use(recover.New())
 	app.Use(logger.New(logger.Config{
 		Format:     "${time} | ${status} | ${latency} | ${ip} | ${method} | ${path} | ${error}\n",
@@ -31,7 +31,8 @@ func Setup(db gorm.DB, app *fiber.App) {
 
 	publicRouter := app.Group("")
 	publicRouter.Get("/swagger/*", swagger.HandlerDefault)
-	//privateRouter := app.Group("")
+	// privateRouter := app.Group("")
 
 	NewCategoryRouter(db, publicRouter)
+	NewProductRouter(db, publicRouter)
 }

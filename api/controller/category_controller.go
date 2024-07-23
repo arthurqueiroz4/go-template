@@ -3,6 +3,7 @@ package controller
 import (
 	"crud-golang/api/dto"
 	"crud-golang/domain"
+
 	"github.com/PeteProgrammer/go-automapper"
 	"github.com/gofiber/fiber/v2"
 )
@@ -38,7 +39,7 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 	}
 
 	var category domain.Category
-	automapper.Map(categoryDTO, &category)
+	automapper.MapLoose(categoryDTO, &category)
 
 	err := cc.cs.Create(&category)
 	if err != nil {

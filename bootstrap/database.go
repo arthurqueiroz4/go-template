@@ -5,10 +5,11 @@ import (
 	"crud-golang/domain"
 	"errors"
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func NewPostgresDatabase(env *Env) gorm.DB {
@@ -40,7 +41,7 @@ func NewPostgresDatabase(env *Env) gorm.DB {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	db.AutoMigrate(&domain.Category{})
+	db.AutoMigrate(&domain.Category{}, &domain.Product{})
 
 	ctx.Done()
 
