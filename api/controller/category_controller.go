@@ -3,7 +3,7 @@ package controller
 import (
 	"crud-golang/api/dto"
 	"crud-golang/domain"
-	"crud-golang/expection"
+	"crud-golang/exception"
 
 	"github.com/PeteProgrammer/go-automapper"
 	"github.com/gofiber/fiber/v2"
@@ -68,13 +68,11 @@ func (cc *CategoryController) Create(c *fiber.Ctx) error {
 func (cc *CategoryController) GetCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).
-			JSON(map[string]any{"message": "ID is required"})
+		return exception.NewErrBadRequest(err.Error(), ":id is required")
 	}
 	category, err := cc.cs.GetById(id)
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).
-			JSON(map[string]any{"message": "Category not found"})
+		return err
 	}
 
 	var categoryDTO dto.CategoryDTO
@@ -168,7 +166,7 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 
 	all, err := cc.cs.GetAll(page, size, name)
 	if err != nil {
-		return expection.NewErrBadRequest(err.Error(), "error in categories list")
+		return exception.NewErrBadRequest(err.Error(), "error in categories list")
 	}
 
 	var dtos []dto.CategoryDTO

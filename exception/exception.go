@@ -1,4 +1,4 @@
-package expection
+package exception
 
 type ErrorBase struct {
 	Body    any
@@ -6,7 +6,7 @@ type ErrorBase struct {
 	Status  int
 }
 
-func (e *ErrorBase) Error() string {
+func (e ErrorBase) Error() string {
 	return e.Message
 }
 
@@ -15,6 +15,9 @@ type (
 		Error() string
 	}
 	ErrNotFound interface {
+		Error() string
+	}
+	ErrInternalServer interface {
 		Error() string
 	}
 )
@@ -27,6 +30,6 @@ func NewErrNotFound(body any, message string) ErrNotFound {
 	return &ErrorBase{Body: body, Message: message, Status: 404}
 }
 
-type NewErrInternalServer struct {
-	ErrorBase
+func NewErrInternalServer(body any, message string) ErrInternalServer {
+	return &ErrorBase{Body: body, Message: message, Status: 500}
 }

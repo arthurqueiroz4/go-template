@@ -2,7 +2,10 @@ package service
 
 import (
 	"crud-golang/domain"
+	"crud-golang/exception"
 	"errors"
+
+	"gorm.io/gorm"
 )
 
 type CategoryService struct {
@@ -18,7 +21,7 @@ func NewCategoryService(categoryRepository domain.CategoryRepository) domain.Cat
 func (cs *CategoryService) Create(category *domain.Category) error {
 	err := cs.cr.Create(category)
 	if err != nil {
-		return errors.New("category creation failed")
+		return exception.NewErrInternalServer(err.Error(), "error in create category")
 	}
 
 	return nil
@@ -27,7 +30,10 @@ func (cs *CategoryService) Create(category *domain.Category) error {
 func (cs *CategoryService) GetById(id int) (*domain.Category, error) {
 	category, err := cs.cr.FindByID(id)
 	if err != nil {
-		return nil, errors.New("category not found")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, exception.NewErrNotFound(err.Error(), "category not found")
+		}
+		return nil, exception.NewErrInternalServer(err.Error(), "error in get category by id")
 	}
 
 	return category, nil
@@ -36,7 +42,7 @@ func (cs *CategoryService) GetById(id int) (*domain.Category, error) {
 func (cs *CategoryService) GetAll(page, size int, name string) ([]domain.Category, error) {
 	all, err := cs.cr.FindAll(page, size, name)
 	if err != nil {
-		return nil, errors.New("category list failed")
+		return nil, exception.NewErrInternalServer(err.Error(), "error in get all categories")
 	}
 
 	return all, nil
@@ -50,7 +56,7 @@ func (cs *CategoryService) Update(id int, categoryToUpdate *domain.Category) err
 	categoryToUpdate.ID = uint(id)
 	err := cs.cr.Update(categoryToUpdate)
 	if err != nil {
-		return errors.New("category update failed")
+		return exception.NewErrInternalServer(err.Error(), "error in update category")
 	}
 
 	return nil
@@ -61,7 +67,11 @@ func (cs *CategoryService) Delete(id int) error {
 		return err
 	}
 
-	return cs.cr.Delete(id)
+	if err := cs.cr.Delete(id); err != nil {
+		return exception.NewErrInternalServer(err.Error(), "error in delete category")
+	}
+
+	return nil
 }
 
 func (cs *CategoryService) GetAllActive(page, size int) ([]domain.Category, error) {
