@@ -3,6 +3,7 @@ package controller
 import (
 	"crud-golang/api/dto"
 	"crud-golang/domain"
+	"crud-golang/expection"
 
 	"github.com/PeteProgrammer/go-automapper"
 	"github.com/gofiber/fiber/v2"
@@ -167,8 +168,7 @@ func (cc *CategoryController) GetAllCategory(c *fiber.Ctx) error {
 
 	all, err := cc.cs.GetAll(page, size, name)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(map[string]any{"message": "Internal server error"})
+		return expection.NewErrBadRequest(err.Error(), "error in categories list")
 	}
 
 	var dtos []dto.CategoryDTO

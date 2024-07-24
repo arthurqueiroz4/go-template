@@ -1,6 +1,7 @@
 package route
 
 import (
+	"crud-golang/api/middleware"
 	_ "crud-golang/docs"
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
@@ -28,6 +29,7 @@ func Setup(db gorm.DB, app *fiber.App) {
 		TimeFormat: "2006-01-02 15:04:05",
 		TimeZone:   "America/Sao_Paulo",
 	}))
+	app.Use(middleware.ErrorMiddleware)
 
 	publicRouter := app.Group("")
 	publicRouter.Get("/swagger/*", swagger.HandlerDefault)
